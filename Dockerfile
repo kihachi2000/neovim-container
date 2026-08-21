@@ -1,0 +1,9 @@
+FROM alpine:3.22
+
+RUN apk add --no-cache \
+        git \
+        neovim \
+        ripgrep
+
+WORKDIR /workspace
+ENTRYPOINT ["nvim"]
