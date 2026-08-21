@@ -1,0 +1,9 @@
+[tasks.ci]
+description = "Build and smoke test the Docker image"
+run = """
+  set -e
+  docker build --tag neovim-container:ci .
+  trap 'docker image rm neovim-container:ci' EXIT
+  docker run --rm neovim-container:ci --headless '+qa'
+  echo "CI completed successfully."
+"""
