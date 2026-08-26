@@ -10,3 +10,9 @@ Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihach
 ```sh
 nvim [オプション] [対象ファイル]
 ```
+
+デバッグ用途で別の Neovim 設定ディレクトリを利用する場合は、`nv-debug` を使う。
+
+```sh
+nv-debug --config-dir "$HOME/git/dotfiles/nvim" [neovim対象ディレクトリ]
+```
