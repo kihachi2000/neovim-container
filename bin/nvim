@@ -3,16 +3,52 @@ set -eu
 
 IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
 
-if [ -t 0 ] && [ -t 1 ]; then
-  docker run -it --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "${PWD}:/workspace" \
-    -w /workspace \
-    "${IMAGE}" "$@"
+CONFIG_DIR=""
+NVIM_ARGS=""
+
+# Single-quote a string for safe use in eval
+_sq() {
+  printf "'"
+  printf '%s' "$1" | sed "s/'/'\\\\''/g"
+  printf "'"
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --config-dir)
+      shift
+      CONFIG_DIR="$1"
+      ;;
+    --config-dir=*)
+      CONFIG_DIR="${1#--config-dir=}"
+      ;;
+    *)
+      NVIM_ARGS="${NVIM_ARGS} $(_sq "$1")"
+      ;;
+  esac
+  shift
+done
+
+if [ -n "${CONFIG_DIR}" ]; then
+  CONFIG_OPTS="-v $(_sq "${CONFIG_DIR}"):/config/nvim -e XDG_CONFIG_HOME=/config"
 else
-  docker run --rm \
+  CONFIG_OPTS=""
+fi
+
+if [ -t 0 ] && [ -t 1 ]; then
+  eval docker run -it --rm \
     -u "$(id -u):$(id -g)" \
-    -v "${PWD}:/workspace" \
+    -v "$(_sq "${PWD}"):/workspace" \
     -w /workspace \
-    "${IMAGE}" "$@"
+    ${CONFIG_OPTS} \
+    "$(_sq "${IMAGE}")" \
+    ${NVIM_ARGS}
+else
+  eval docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(_sq "${PWD}"):/workspace" \
+    -w /workspace \
+    ${CONFIG_OPTS} \
+    "$(_sq "${IMAGE}")" \
+    ${NVIM_ARGS}
 fi

@@ -10,3 +10,13 @@ Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihach
 ```sh
 nvim [オプション] [対象ファイル]
 ```
+
+### `--config-dir` オプション
+
+Neovim の設定ディレクトリをホスト側のパスで上書きできる。
+
+```sh
+nvim --config-dir $HOME/git/dotfiles/nvim [オプション] [対象ファイル]
+```
+
+指定したディレクトリはコンテナ内の Neovim 設定ディレクトリとしてマウントされる。
