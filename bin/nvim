@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
+
+if [ -t 0 ] && [ -t 1 ]; then
+  docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "${PWD}:/workspace" \
+    -w /workspace \
+    "${IMAGE}" "$@"
+else
+  docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "${PWD}:/workspace" \
+    -w /workspace \
+    "${IMAGE}" "$@"
+fi
