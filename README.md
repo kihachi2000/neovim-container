@@ -14,5 +14,5 @@ nvim [オプション] [編集対象ファイル]
 デバッグ用途で別の Neovim 設定ディレクトリを利用する場合は、`nv-debug` を使う。
 
 ```sh
-nv-debug --config-dir <init.luaのあるディレクトリ> [編集対象ファイル]
+nv-debug <init.luaのあるディレクトリ> [-- [neovimオプション] [編集対象ファイル]]
 ```

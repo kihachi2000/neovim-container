@@ -5,86 +5,56 @@ IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
 
 usage() {
   cat <<'EOF' >&2
-Usage: nv-debug --config-dir <config-dir> [workspace-dir]
+Usage: nv-debug <config-dir> [-- [neovim-options] [file]]
 EOF
 }
 
-CONFIG_DIR=""
-WORKSPACE_DIR=""
-
-while [ "$#" -gt 0 ]; do
-  case "$1" in
-    --config-dir)
-      if [ "$#" -lt 2 ]; then
-        usage
-        exit 1
-      fi
-      CONFIG_DIR="$2"
-      shift 2
-      ;;
-    --config-dir=*)
-      CONFIG_DIR="${1#*=}"
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -*)
-      echo "Unknown option: $1" >&2
-      usage
-      exit 1
-      ;;
-    *)
-      if [ -z "${WORKSPACE_DIR}" ]; then
-        WORKSPACE_DIR="$1"
-        shift
-      else
-        echo "Too many arguments: $1" >&2
-        usage
-        exit 1
-      fi
-      ;;
-  esac
-done
-
-if [ -z "${CONFIG_DIR}" ]; then
-  echo "--config-dir is required" >&2
+if [ "$#" -eq 0 ]; then
   usage
   exit 1
 fi
 
-if [ -z "${WORKSPACE_DIR}" ]; then
-  WORKSPACE_DIR="${PWD}"
-fi
+case "$1" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    usage
+    exit 1
+    ;;
+esac
+
+CONFIG_DIR="$1"
+shift
 
 if [ ! -d "${CONFIG_DIR}" ]; then
   echo "config directory does not exist: ${CONFIG_DIR}" >&2
   exit 1
 fi
 
-if [ ! -d "${WORKSPACE_DIR}" ]; then
-  echo "workspace directory does not exist: ${WORKSPACE_DIR}" >&2
-  exit 1
+# consume optional '--' separator
+if [ "$#" -gt 0 ] && [ "$1" = "--" ]; then
+  shift
 fi
 
 CONFIG_DIR_ABS="$(cd "${CONFIG_DIR}" && pwd)"
-WORKSPACE_DIR_ABS="$(cd "${WORKSPACE_DIR}" && pwd)"
 
 if [ -t 0 ] && [ -t 1 ]; then
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e "XDG_CONFIG_HOME=/tmp/nvim-config" \
     -v "${CONFIG_DIR_ABS}:/tmp/nvim-config/nvim" \
-    -v "${WORKSPACE_DIR_ABS}:/workspace" \
+    -v "${PWD}:/workspace" \
     -w /workspace \
-    "${IMAGE}"
+    "${IMAGE}" "$@"
 else
   docker run --rm \
     -u "$(id -u):$(id -g)" \
     -e "XDG_CONFIG_HOME=/tmp/nvim-config" \
     -v "${CONFIG_DIR_ABS}:/tmp/nvim-config/nvim" \
-    -v "${WORKSPACE_DIR_ABS}:/workspace" \
+    -v "${PWD}:/workspace" \
     -w /workspace \
-    "${IMAGE}"
+    "${IMAGE}" "$@"
 fi
