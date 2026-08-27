@@ -42,4 +42,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ steps.metadata.outputs.image }}:${{ steps.metadata.outputs.tag }}
+          tags: |
+            ghcr.io/${{ steps.metadata.outputs.image }}:${{ steps.metadata.outputs.tag }}
+            ghcr.io/${{ steps.metadata.outputs.image }}:latest
