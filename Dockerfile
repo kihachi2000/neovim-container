@@ -31,4 +31,5 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
+ENV HOME=/tmp
 ENTRYPOINT ["nvim"]
