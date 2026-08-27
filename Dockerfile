@@ -30,6 +30,4 @@ RUN set -eux; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
-ENV HOME=/tmp
 ENTRYPOINT ["nvim"]
