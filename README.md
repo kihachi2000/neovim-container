@@ -8,7 +8,7 @@ Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihach
 `bin/` にパスを通し、以下のコマンドを実行する。
 
 ```sh
-nv [オプション] [対象ファイル]
+nv [オプション] [編集対象ファイル]
 ```
 
 デバッグ用途で別の Neovim 設定ディレクトリを利用する場合は、`nv-debug` を使う。
