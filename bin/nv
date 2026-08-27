@@ -1,17 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
-# Create the directory specified by the -v option in advance.
-# Without doing so, Docker will create it with the Docker daemon's user as the owner.
-# If the user running the Docker daemon differs from the user running the nv command,
-# you will no longer be able to access these directories.
-mkdir ${HOME}/.local/share/nvim
-mkdir ${HOME}/.local/state/nvim
-mkdir ${HOME}/.cache/nvim
+readonly IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
 
-IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
-
-OPT=(
+declare -a DOCKER_OPTIONS=(
+  "--rm"
   "-e" "HOME=${HOME}"
   "-v" "${PWD}:${PWD}"
   "-v" "${HOME}/.local/share/nvim:${HOME}/.local/share/nvim"
@@ -20,18 +13,26 @@ OPT=(
   "-w" "${PWD}"
 )
 
+# Create the directory specified by the -v option in advance.
+# Without doing so, Docker will create it with the Docker daemon's user as the owner.
+# If the user running the Docker daemon differs from the user running the nv command,
+# you will no longer be able to access these directories.
+for directory in \
+  "${HOME}/.local/share/nvim" \
+  "${HOME}/.local/state/nvim" \
+  "${HOME}/.cache/nvim"
+do
+  mkdir -p "${directory}"
+done
+
 # Change the user ID for non-Mac devices.
-if [ "$(uname)" != "Darwin" ]; then
-  OPT+=(
-    "-u" "$(id -u):$(id -g)" \
-  )
+if [ "$(uname -s)" != "Darwin" ]; then
+  DOCKER_OPTIONS+=("-u" "$(id -u):$(id -g)")
 fi
 
 # Add -it when running interactively.
 if [ -t 0 ] && [ -t 1 ]; then
-  OPT+=(
-    "-it"
-  )
+  DOCKER_OPTIONS+=("-it")
 fi
 
-docker run "${OPT[@]}" "${IMAGE}" "$@"
+exec docker run "${DOCKER_OPTIONS[@]}" "${IMAGE}" "$@"

@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
-IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
+readonly IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
 
 usage() {
   cat <<'EOF' >&2
@@ -39,22 +39,40 @@ if [ "$#" -gt 0 ] && [ "$1" = "--" ]; then
   shift
 fi
 
-CONFIG_DIR_ABS="$(cd "${CONFIG_DIR}" && pwd)"
+readonly CONFIG_DIR_ABS="$(cd "${CONFIG_DIR}" && pwd)"
 
-if [ -t 0 ] && [ -t 1 ]; then
-  docker run -it --rm \
-    -u "$(id -u):$(id -g)" \
-    -e "XDG_CONFIG_HOME=/tmp/nvim-config" \
-    -v "${CONFIG_DIR_ABS}:/tmp/nvim-config/nvim" \
-    -v "${PWD}:/workspace" \
-    -w /workspace \
-    "${IMAGE}" "$@"
-else
-  docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -e "XDG_CONFIG_HOME=/tmp/nvim-config" \
-    -v "${CONFIG_DIR_ABS}:/tmp/nvim-config/nvim" \
-    -v "${PWD}:/workspace" \
-    -w /workspace \
-    "${IMAGE}" "$@"
+declare -a DOCKER_OPTIONS=(
+  "--rm"
+  "-e" "HOME=${HOME}"
+  "-e" "XDG_CONFIG_HOME=/tmp/nvim-config"
+  "-v" "${PWD}:${PWD}"
+  "-v" "${HOME}/.local/share/nvim:${HOME}/.local/share/nvim"
+  "-v" "${HOME}/.local/state/nvim:${HOME}/.local/state/nvim"
+  "-v" "${HOME}/.cache/nvim:${HOME}/.cache/nvim"
+  "-v" "${CONFIG_DIR_ABS}:/tmp/nvim-config/nvim"
+  "-w" "${PWD}"
+)
+
+# Create the directory specified by the -v option in advance.
+# Without doing so, Docker will create it with the Docker daemon's user as the owner.
+# If the user running the Docker daemon differs from the user running the nv command,
+# you will no longer be able to access these directories.
+for directory in \
+  "${HOME}/.local/share/nvim" \
+  "${HOME}/.local/state/nvim" \
+  "${HOME}/.cache/nvim"
+do
+  mkdir -p "${directory}"
+done
+
+# Change the user ID for non-Mac devices.
+if [ "$(uname -s)" != "Darwin" ]; then
+  DOCKER_OPTIONS+=("-u" "$(id -u):$(id -g)")
 fi
+
+# Add -it when running interactively.
+if [ -t 0 ] && [ -t 1 ]; then
+  DOCKER_OPTIONS+=("-it")
+fi
+
+exec docker run "${DOCKER_OPTIONS[@]}" "${IMAGE}" "$@"
