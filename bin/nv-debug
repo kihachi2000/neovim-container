@@ -44,24 +44,9 @@ readonly CONFIG_DIR_ABS="$(cd "${CONFIG_DIR}" && pwd)"
 declare -a DOCKER_OPTIONS=(
   "--rm"
   "-v" "${PWD}:${PWD}"
-  "-v" "${HOME}/.local/share/nvim:${CONTAINER_HOME}/.local/share/nvim"
-  "-v" "${HOME}/.local/state/nvim:${CONTAINER_HOME}/.local/state/nvim"
-  "-v" "${HOME}/.cache/nvim:${CONTAINER_HOME}/.cache/nvim"
   "-v" "${CONFIG_DIR_ABS}:${CONTAINER_XDG_CONFIG_HOME}/nvim"
   "-w" "${PWD}"
 )
-
-# Create the directory specified by the -v option in advance.
-# Without doing so, Docker will create it with the Docker daemon's user as the owner.
-# If the user running the Docker daemon differs from the user running the nv command,
-# you will no longer be able to access these directories.
-for directory in \
-  "${HOME}/.local/share/nvim" \
-  "${HOME}/.local/state/nvim" \
-  "${HOME}/.cache/nvim"
-do
-  mkdir -p "${directory}"
-done
 
 # Change the user ID for non-Mac devices.
 if [ "$(uname -s)" != "Darwin" ]; then
