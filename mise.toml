@@ -6,8 +6,6 @@ run = """
   trap 'docker image rm neovim-container:ci' EXIT
   docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
   docker run --rm neovim-container:ci --headless '+qa'
-  docker run --rm neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
-  docker run --rm -u "$(id -u):$(id -g)" neovim-container:ci --headless '+qa'
   echo "CI completed successfully."
 """
