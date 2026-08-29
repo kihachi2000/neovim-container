@@ -20,7 +20,7 @@ CI では以下を確認すること。
 
 ## コミットメッセージのルール（Conventional Commits 準拠）
 
-コミットメッセージは以下の形式に従うこと。
+コミットメッセージは以下の形式に従った英文とすること。
 
 ```
 <type>[optional scope]: <description>
