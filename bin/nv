@@ -2,14 +2,17 @@
 set -eu
 
 readonly IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
+readonly CONTAINER_HOME="/tmp/nvim-home"
+readonly CONTAINER_XDG_CONFIG_HOME="${CONTAINER_HOME}/.config"
 
 declare -a DOCKER_OPTIONS=(
   "--rm"
-  "-e" "HOME=${HOME}"
+  "-e" "HOME=${CONTAINER_HOME}"
+  "-e" "XDG_CONFIG_HOME=${CONTAINER_XDG_CONFIG_HOME}"
   "-v" "${PWD}:${PWD}"
-  "-v" "${HOME}/.local/share/nvim:${HOME}/.local/share/nvim"
-  "-v" "${HOME}/.local/state/nvim:${HOME}/.local/state/nvim"
-  "-v" "${HOME}/.cache/nvim:${HOME}/.cache/nvim"
+  "-v" "${HOME}/.local/share/nvim:${CONTAINER_HOME}/.local/share/nvim"
+  "-v" "${HOME}/.local/state/nvim:${CONTAINER_HOME}/.local/state/nvim"
+  "-v" "${HOME}/.cache/nvim:${CONTAINER_HOME}/.cache/nvim"
   "-w" "${PWD}"
 )
 
