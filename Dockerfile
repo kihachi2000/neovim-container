@@ -9,6 +9,9 @@ ARG NVIM_SHA256_X86_64
 ARG NVIM_SHA256_ARM64
 ARG TARGETARCH
 
+ENV HOME=/tmp/nvim-home \
+    XDG_CONFIG_HOME=/tmp/nvim-home/.config
+
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -26,8 +29,13 @@ RUN set -eux; \
     echo "${SHA256}  /tmp/nvim.tar.gz" | sha256sum -c; \
     tar -xzf /tmp/nvim.tar.gz -C /usr/local --strip-components=1; \
     rm /tmp/nvim.tar.gz; \
+    mkdir -p "${XDG_CONFIG_HOME}" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim"; \
+    chmod 0755 "${HOME}" "${XDG_CONFIG_HOME}"; \
+    chmod -R 0777 "${HOME}/.local" "${HOME}/.cache"; \
     apt-get purge -y curl; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
+
+COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
 ENTRYPOINT ["nvim"]
