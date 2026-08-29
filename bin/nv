@@ -2,8 +2,6 @@
 set -eu
 
 readonly IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
-readonly CONTAINER_HOME="/tmp/nvim-home"
-readonly CONTAINER_XDG_CONFIG_HOME="${CONTAINER_HOME}/.config"
 
 declare -a DOCKER_OPTIONS=(
   "--rm"
