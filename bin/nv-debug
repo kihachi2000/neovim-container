@@ -2,8 +2,6 @@
 set -eu
 
 readonly IMAGE="${NVIM_CONTAINER_IMAGE:-ghcr.io/kihachi2000/neovim-container:latest}"
-readonly CONTAINER_HOME="/tmp/nvim-home"
-readonly CONTAINER_XDG_CONFIG_HOME="/tmp/nvim-config"
 
 usage() {
   cat <<'EOF' >&2
@@ -45,8 +43,6 @@ readonly CONFIG_DIR_ABS="$(cd "${CONFIG_DIR}" && pwd)"
 
 declare -a DOCKER_OPTIONS=(
   "--rm"
-  "-e" "HOME=${CONTAINER_HOME}"
-  "-e" "XDG_CONFIG_HOME=${CONTAINER_XDG_CONFIG_HOME}"
   "-v" "${PWD}:${PWD}"
   "-v" "${HOME}/.local/share/nvim:${CONTAINER_HOME}/.local/share/nvim"
   "-v" "${HOME}/.local/state/nvim:${CONTAINER_HOME}/.local/state/nvim"
