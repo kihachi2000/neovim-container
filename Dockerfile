@@ -30,8 +30,9 @@ RUN set -eux; \
     tar -xzf /tmp/nvim.tar.gz -C /usr/local --strip-components=1; \
     rm /tmp/nvim.tar.gz; \
     mkdir -p "${XDG_CONFIG_HOME}" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim"; \
-    git clone --filter=blob:none https://github.com/folke/lazy.nvim.git \
+    git clone --depth=1 https://github.com/folke/lazy.nvim.git \
         --branch=stable "${HOME}/.local/share/nvim/lazy/lazy.nvim"; \
+    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"; \
     chmod 0755 "${XDG_CONFIG_HOME}"; \
     chmod 1777 \
         "${HOME}" \
