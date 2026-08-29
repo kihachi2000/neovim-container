@@ -10,6 +10,14 @@ Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツー�
 - Dockerfile は軽量さを優先した構成にすること。
 - Dockerfile 更新時は、CI も更新すること。
 
+## CI 確認項目
+
+CI では以下を確認すること。
+
+- neovim を起動できること（`nvim --headless '+qa'` が成功すること）。
+- neovim が依存するソフトウェアを起動できること。
+  - `〇〇 --version` 等で起動確認を行うこと。
+
 ## コミットメッセージのルール（Conventional Commits 準拠）
 
 コミットメッセージは以下の形式に従うこと。
