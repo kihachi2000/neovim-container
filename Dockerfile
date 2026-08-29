@@ -30,9 +30,9 @@ RUN set -eux; \
     tar -xzf /tmp/nvim.tar.gz -C /usr/local --strip-components=1; \
     rm /tmp/nvim.tar.gz; \
     mkdir -p "${XDG_CONFIG_HOME}" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim"; \
-    chmod 1777 "${HOME}"; \
     chmod 0755 "${XDG_CONFIG_HOME}"; \
     chmod 1777 \
+        "${HOME}" \
         "${HOME}/.local" \
         "${HOME}/.local/share" \
         "${HOME}/.local/share/nvim" \
