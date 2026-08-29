@@ -16,8 +16,7 @@ CI では以下を確認すること。
 
 - neovim を起動できること（`nvim --headless '+qa'` が成功すること）。
 - neovim が依存するソフトウェアを起動できること。
-  - `git --version` が成功すること。
-  - `rg --version` が成功すること。
+  - `〇〇 --version` 等で起動確認を行うこと。
 
 ## コミットメッセージのルール（Conventional Commits 準拠）
 
