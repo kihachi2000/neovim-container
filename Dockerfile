@@ -30,12 +30,21 @@ RUN set -eux; \
     tar -xzf /tmp/nvim.tar.gz -C /usr/local --strip-components=1; \
     rm /tmp/nvim.tar.gz; \
     mkdir -p "${XDG_CONFIG_HOME}" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim"; \
-    chmod 0755 "${HOME}" "${XDG_CONFIG_HOME}"; \
-    chmod -R 0777 "${HOME}/.local" "${HOME}/.cache"; \
+    chmod 1777 "${HOME}" "${XDG_CONFIG_HOME}"; \
+    chmod 1777 \
+        "${HOME}/.local" \
+        "${HOME}/.local/share" \
+        "${HOME}/.local/share/nvim" \
+        "${HOME}/.local/state" \
+        "${HOME}/.local/state/nvim" \
+        "${HOME}/.cache" \
+        "${HOME}/.cache/nvim"; \
     apt-get purge -y curl; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
+
+RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"
 
 ENTRYPOINT ["nvim"]

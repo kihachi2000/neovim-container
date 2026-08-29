@@ -7,7 +7,7 @@ run = """
   docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
   docker run --rm --entrypoint test neovim-container:ci -f /tmp/nvim-home/.config/nvim/init.lua
   docker run --rm neovim-container:ci -u NONE --headless '+lua assert(vim.fn.stdpath("config") == "/tmp/nvim-home/.config/nvim")' '+qa'
-  docker run --rm -e HOME=/tmp/alternate-home neovim-container:ci -u NONE --headless '+lua assert(vim.fn.stdpath("config") == "/tmp/nvim-home/.config/nvim")' '+qa'
+  docker run --rm -e HOME=/tmp/alternate-home -e XDG_CONFIG_HOME=/tmp/nvim-home/.config neovim-container:ci -u NONE --headless '+lua assert(vim.fn.stdpath("config") == "/tmp/nvim-home/.config/nvim")' '+qa'
   docker run --rm neovim-container:ci --headless '+qa'
   docker run --rm neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
