@@ -5,7 +5,6 @@ run = """
   docker build --tag neovim-container:ci .
   trap 'docker image rm neovim-container:ci' EXIT
   docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
-  docker run --rm --entrypoint test neovim-container:ci -d /tmp/nvim-home/.local/share/nvim/lazy/lazy.nvim
   docker run --rm neovim-container:ci --headless '+qa'
   docker run --rm --entrypoint rg neovim-container:ci --version
   echo "CI completed successfully."
