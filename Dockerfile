@@ -2,7 +2,7 @@ ARG NVIM_VERSION=v0.12.5
 ARG NVIM_SHA256_X86_64=bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875
 ARG NVIM_SHA256_ARM64=1aa5ca085249580ae0f91eb14f27ec0919773ff2d99a163d03f3d6c21ac29725
 
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim AS builder
 
 ARG NVIM_VERSION
 ARG NVIM_SHA256_X86_64
@@ -17,8 +17,7 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
-        git \
-        ripgrep; \
+        git; \
     case "${TARGETARCH}" in \
         amd64) NVIM_ARCH="x86_64"; SHA256="${NVIM_SHA256_X86_64}" ;; \
         arm64) NVIM_ARCH="arm64";  SHA256="${NVIM_SHA256_ARM64}" ;; \
@@ -40,16 +39,28 @@ RUN set -eux; \
         "${HOME}/.local/state/nvim" \
         "${HOME}/.cache" \
         "${HOME}/.cache/nvim"; \
-    apt-get purge -y curl; \
-    apt-get autoremove -y; \
-    rm -rf /var/lib/apt/lists/*; \
     git clone --depth=1 https://github.com/folke/lazy.nvim.git \
         --branch=stable "${HOME}/.local/share/nvim/lazy/lazy.nvim"; \
-    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"; \
-    nvim --headless +"Lazy! sync" +qa
+    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
-RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"
+RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
+    nvim --headless +"Lazy! sync" +qa
+
+FROM debian:bookworm-slim
+
+ENV HOME=/tmp/nvim-home \
+    XDG_CONFIG_HOME=/tmp/nvim-home/.config
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        ripgrep; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder ${HOME} ${HOME}
 
 ENTRYPOINT ["nvim"]
