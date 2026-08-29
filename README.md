@@ -7,6 +7,8 @@ Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihach
 
 `bin/` にパスを通し、以下のコマンドを実行する。
 
+このリポジトリを clone したあとは、`git submodule update --init --recursive` で `dotfiles/` も取得する。
+
 ```sh
 nv [オプション] [編集対象ファイル]
 ```
