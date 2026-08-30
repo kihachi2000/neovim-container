@@ -18,6 +18,7 @@ RUN set -eux; \
         ca-certificates \
         curl \
         git; \
+    rm -rf /var/lib/apt/lists/*; \
     case "${TARGETARCH}" in \
         amd64) NVIM_ARCH="x86_64"; SHA256="${NVIM_SHA256_X86_64}" ;; \
         arm64) NVIM_ARCH="arm64";  SHA256="${NVIM_SHA256_ARM64}" ;; \
