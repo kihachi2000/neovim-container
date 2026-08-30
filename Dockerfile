@@ -50,9 +50,17 @@ RUN set -eux; \
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
 RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        libstdc++-12-dev \
+        make; \
     nvim --headless \
         "+Lazy! sync" \
         "+TSUpdateSync" \
-        "+qa"
+        "+qa"; \
+    apt-get purge -y gcc libstdc++-12-dev make; \
+    apt-get autoremove -y; \
+    rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["nvim"]
