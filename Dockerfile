@@ -53,13 +53,12 @@ RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         gcc \
-        libstdc++-12-dev \
         make; \
     nvim --headless \
         "+Lazy! sync" \
         "+TSUpdateSync" \
         "+qa"; \
-    apt-get purge -y gcc libstdc++-12-dev make; \
+    apt-get purge -y gcc make; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
