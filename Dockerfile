@@ -41,9 +41,6 @@ RUN set -eux; \
         "${HOME}/.local/state/nvim" \
         "${HOME}/.cache" \
         "${HOME}/.cache/nvim"; \
-    git clone --depth=1 https://github.com/folke/lazy.nvim.git \
-        --branch=stable "${HOME}/.local/share/nvim/lazy/lazy.nvim"; \
-    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"; \
     nvim --headless +"Lazy! sync" +qa
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
