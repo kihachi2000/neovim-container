@@ -50,6 +50,7 @@ RUN set -eux; \
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
-RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"
+RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
+    nvim --headless "+TSUpdateSync" +qa
 
 ENTRYPOINT ["nvim"]

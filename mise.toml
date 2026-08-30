@@ -8,5 +8,6 @@ run = """
   docker run --rm neovim-container:ci --headless '+qa'
   docker run --rm --entrypoint git neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
+  docker run --rm --entrypoint sh neovim-container:ci -c 'find /tmp/nvim-home -name "*.so" | grep -q .'
   echo "CI completed successfully."
 """
