@@ -45,12 +45,14 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     git clone --depth=1 https://github.com/folke/lazy.nvim.git \
         --branch=stable "${HOME}/.local/share/nvim/lazy/lazy.nvim"; \
-    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"; \
-    nvim --headless +"Lazy! sync" +qa
+    rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
 RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
-    nvim --headless "+TSUpdateSync" +qa
+    nvim --headless \
+        "+Lazy! sync" \
+        "+TSUpdateSync" \
+        "+qa"
 
 ENTRYPOINT ["nvim"]
