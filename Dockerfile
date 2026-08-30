@@ -19,6 +19,7 @@ RUN set -eux; \
         curl \
         git \
         ripgrep; \
+    rm -rf /var/lib/apt/lists/*; \
     case "${TARGETARCH}" in \
         amd64) NVIM_ARCH="x86_64"; SHA256="${NVIM_SHA256_X86_64}" ;; \
         arm64) NVIM_ARCH="arm64";  SHA256="${NVIM_SHA256_ARM64}" ;; \
@@ -40,9 +41,6 @@ RUN set -eux; \
         "${HOME}/.local/state/nvim" \
         "${HOME}/.cache" \
         "${HOME}/.cache/nvim"; \
-    apt-get purge -y curl; \
-    apt-get autoremove -y; \
-    rm -rf /var/lib/apt/lists/*; \
     git clone --depth=1 https://github.com/folke/lazy.nvim.git \
         --branch=stable "${HOME}/.local/share/nvim/lazy/lazy.nvim"; \
     rm -rf "${HOME}/.local/share/nvim/lazy/lazy.nvim/.git"; \
