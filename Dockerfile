@@ -40,11 +40,11 @@ RUN set -eux; \
         "${HOME}/.local/state" \
         "${HOME}/.local/state/nvim" \
         "${HOME}/.cache" \
-        "${HOME}/.cache/nvim"; \
-    nvim --headless +"Lazy! sync" +qa
+        "${HOME}/.cache/nvim"
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
-RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"
+RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
+    nvim --headless +"Lazy! sync" +qa
 
 ENTRYPOINT ["nvim"]
