@@ -1,0 +1,34 @@
+#!/bin/bash
+set -eu
+
+readonly BASE_IMAGE="ghcr.io/kihachi2000/neovim-container"
+
+usage() {
+  cat <<'EOF' >&2
+Usage: nv-update [<version-tag>]
+
+Pull the neovim-container image. If no version tag is given, pulls "latest".
+
+Examples:
+  nv-update              # pulls ghcr.io/kihachi2000/neovim-container:latest
+  nv-update v26.08.31   # pulls ghcr.io/kihachi2000/neovim-container:v26.08.31
+EOF
+}
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    usage
+    exit 1
+    ;;
+esac
+
+TAG="${1:-latest}"
+IMAGE="${BASE_IMAGE}:${TAG}"
+
+echo "Pulling ${IMAGE} ..."
+exec docker pull "${IMAGE}"
