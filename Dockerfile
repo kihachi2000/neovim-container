@@ -29,22 +29,11 @@ RUN set -eux; \
         -o /tmp/nvim.tar.gz; \
     echo "${SHA256}  /tmp/nvim.tar.gz" | sha256sum -c; \
     tar -xzf /tmp/nvim.tar.gz -C /usr/local --strip-components=1; \
-    rm /tmp/nvim.tar.gz; \
-    mkdir -p "${XDG_CONFIG_HOME}" "${HOME}/.local/share/nvim" "${HOME}/.local/state/nvim" "${HOME}/.cache/nvim"; \
-    chmod 0755 "${XDG_CONFIG_HOME}"; \
-    chmod 1777 \
-        "${HOME}" \
-        "${HOME}/.local" \
-        "${HOME}/.local/share" \
-        "${HOME}/.local/share/nvim" \
-        "${HOME}/.local/state" \
-        "${HOME}/.local/state/nvim" \
-        "${HOME}/.cache" \
-        "${HOME}/.cache/nvim"
+    rm /tmp/nvim.tar.gz
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
-RUN chmod -R a+rX "${XDG_CONFIG_HOME}/nvim"; \
-    nvim --headless +"Lazy! sync" +qa
+RUN nvim --headless +"Lazy! sync" +qa; \
+    chmod 1777 -R "${HOME}"
 
 ENTRYPOINT ["nvim"]
