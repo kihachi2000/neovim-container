@@ -1,13 +1,13 @@
 ARG NVIM_VERSION=v0.12.5
 ARG NVIM_SHA256_X86_64=bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875
 ARG NVIM_SHA256_ARM64=1aa5ca085249580ae0f91eb14f27ec0919773ff2d99a163d03f3d6c21ac29725
-ARG TREE_SITTER_CLI_VERSION=0.25.6
+ARG TREE_SITTER_CLI_VERSION=0.27.0
 
 FROM rust:slim-bookworm AS tree-sitter-builder
 
 ARG TREE_SITTER_CLI_VERSION
 
-RUN cargo install tree-sitter-cli --version "${TREE_SITTER_CLI_VERSION}" --root /out
+RUN cargo binstall tree-sitter-cli --version "${TREE_SITTER_CLI_VERSION}" --root /out
 
 FROM debian:bookworm-slim
 
