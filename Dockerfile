@@ -3,7 +3,7 @@ ARG NVIM_SHA256_X86_64=bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca3
 ARG NVIM_SHA256_ARM64=1aa5ca085249580ae0f91eb14f27ec0919773ff2d99a163d03f3d6c21ac29725
 ARG TREE_SITTER_CLI_VERSION=0.27.0
 
-FROM rust:slim-bookworm AS tree-sitter-builder
+FROM rust:slim-trixie AS tree-sitter-builder
 
 ARG TREE_SITTER_CLI_VERSION
 
@@ -13,7 +13,7 @@ RUN set -eux; \
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash; \
     cargo binstall tree-sitter-cli --version "${TREE_SITTER_CLI_VERSION}" --root /out
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 ARG NVIM_VERSION
 ARG NVIM_SHA256_X86_64
@@ -26,6 +26,7 @@ ENV HOME=/tmp/nvim-home \
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
+        build-essential \
         ca-certificates \
         curl \
         git \
