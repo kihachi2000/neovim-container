@@ -44,7 +44,7 @@ RUN set -eux; \
         git \
         ripgrep; \
     rm -rf /var/lib/apt/lists/*; \
-    bash /usr/local/bin/install_neovim.sh \
+    bash /usr/local/bin/install_neovim.sh; \
     nvim --headless "+Lazy! sync" "+qa"; \
     chmod 1777 -R "${HOME}"
 
