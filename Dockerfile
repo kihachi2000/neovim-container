@@ -47,7 +47,7 @@ COPY --from=tree-sitter-builder /out/bin/tree-sitter /usr/local/bin/tree-sitter
 
 COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
 
-RUN nvim --headless "+Lazy! sync" "+TSUpdate" "+qa"; \
+RUN nvim --headless "+Lazy! sync" "+TSInstall all" "+qa"; \
     chmod 1777 -R "${HOME}"
 
 ENTRYPOINT ["nvim"]
