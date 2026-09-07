@@ -40,8 +40,15 @@ mkdir /queries
 
 
 # Build
+# Neovim preinstalls the following parsers:
+# - c
+# - diff
+# - lua
+# - markdown
+# - markdown_inline
+# - vimscript
+# - vimdoc
 clone_and_build bash        https://github.com/tree-sitter/tree-sitter-bash.git
-clone_and_build c           https://github.com/tree-sitter/tree-sitter-c.git
 clone_and_build capnp       https://github.com/tree-sitter-grammars/tree-sitter-capnp.git
 clone_and_build cmake       https://github.com/uyha/tree-sitter-cmake.git
 clone_and_build cpp         https://github.com/tree-sitter/tree-sitter-cpp.git
@@ -65,5 +72,4 @@ clone_and_build toml        https://github.com/tree-sitter-grammars/tree-sitter-
 clone_and_build tsx         https://github.com/tree-sitter/tree-sitter-typescript.git
 clone_and_build typescript  https://github.com/tree-sitter/tree-sitter-typescript.git
 clone_and_build vim         https://github.com/tree-sitter-grammars/tree-sitter-vim.git
-clone_and_build vimdoc      https://github.com/neovim/tree-sitter-vimdoc.git
 clone_and_build yaml        https://github.com/tree-sitter-grammars/tree-sitter-yaml.git
