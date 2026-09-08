@@ -71,5 +71,4 @@ clone_and_build rust        https://github.com/tree-sitter/tree-sitter-rust.git
 clone_and_build toml        https://github.com/tree-sitter-grammars/tree-sitter-toml.git
 clone_and_build tsx         https://github.com/tree-sitter/tree-sitter-typescript.git
 clone_and_build typescript  https://github.com/tree-sitter/tree-sitter-typescript.git
-clone_and_build vim         https://github.com/tree-sitter-grammars/tree-sitter-vim.git
 clone_and_build yaml        https://github.com/tree-sitter-grammars/tree-sitter-yaml.git
