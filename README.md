@@ -13,8 +13,8 @@ Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihach
 nv [オプション] [編集対象ファイル]
 ```
 
-デバッグ用途で別の Neovim 設定ディレクトリを利用する場合は、`nv-debug` を使う。
+コンテナ内でデバッグ用途の `bash` を起動する場合は、`nv-debug` を使う。
 
 ```sh
-nv-debug <init.luaのあるディレクトリ> [-- [neovimオプション] [編集対象ファイル]]
+nv-debug [bashオプション]
 ```
