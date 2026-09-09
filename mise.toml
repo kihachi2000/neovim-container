@@ -8,5 +8,14 @@ run = """
   docker run --rm neovim-container:ci --headless '+qa'
   docker run --rm --entrypoint git neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
+  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
+    for parser in /usr/local/lib/nvim/parser/*.so; do
+      parser_name="${parser##*/}"
+      parser_name="${parser_name%.so}"
+      nvim --headless -u NONE \
+        -c "lua assert(vim.treesitter.language.add(\"${parser_name}\"))" \
+        -c "qa"
+    done
+  '
   echo "CI completed successfully."
 """
