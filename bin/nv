@@ -1,9 +1,9 @@
 #!/bin/bash
 set -eu
 
-readonly DEFAULT_IMAGE_REPOSITORY="ghcr.io/kihachi2000/neovim-container"
+readonly IMAGE_REPOSITORY="ghcr.io/kihachi2000/neovim-container"
 readonly IMAGE_TAG="${NVIM_CONTAINER_TAG:-latest}"
-readonly IMAGE="${NVIM_CONTAINER_IMAGE:-${DEFAULT_IMAGE_REPOSITORY}:${IMAGE_TAG}}"
+readonly IMAGE="${NVIM_CONTAINER_IMAGE:-${IMAGE_REPOSITORY}:${IMAGE_TAG}}"
 
 declare -a DOCKER_OPTIONS=(
   "--rm"
