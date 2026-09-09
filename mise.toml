@@ -9,11 +9,15 @@ run = """
   docker run --rm --entrypoint git neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
   docker run --rm --entrypoint sh neovim-container:ci -eu -c '
-    for parser in /usr/local/lib/nvim/parser/*.so; do
-      parser_name="${parser##*/}"
-      parser_name="${parser_name%.so}"
+    parsers="
+      bash capnp cmake cpp css csv dart dockerfile gitcommit haskell html
+      javascript json json5 just luadoc make python regex rust toml tsx
+      typescript yaml
+      c diff lua markdown markdown_inline vimscript vimdoc
+    "
+    for parser in ${parsers}; do
       nvim --headless -u NONE \
-        -c "lua assert(vim.treesitter.language.add(\"${parser_name}\"))" \
+        -c "lua assert(vim.treesitter.language.add('${parser}'))" \
         -c "qa"
     done
   '
