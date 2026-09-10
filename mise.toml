@@ -6,6 +6,10 @@ run = """
   trap 'docker image rm neovim-container:ci' EXIT
   docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
   docker run --rm neovim-container:ci --headless '+qa'
+  docker run --rm neovim-container:ci --headless \
+    '+sleep 10' \
+    '+lua local msgs = vim.api.nvim_exec2("messages", { output = true }).output; assert(msgs:match("^%s*$"), msgs)' \
+    '+qa'
   docker run --rm --entrypoint git neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
   docker run --rm --entrypoint sh neovim-container:ci -eu -c '
