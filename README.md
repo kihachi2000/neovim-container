@@ -1,13 +1,11 @@
 # neovim-container
 
 Neovim 実行専用の Docker コンテナ。  
-Neovim の設定ファイルは [kihachi2000/dotfiles](https://github.com/kihachi2000/dotfiles) のものを利用。
+Neovim の設定ファイルは `nvim/` で管理している。
 
 ## 使い方
 
 `bin/` にパスを通し、以下のコマンドを実行する。
-
-このリポジトリを clone したあとは、`git submodule update --init --recursive` で `dotfiles/` も取得する。
 
 ```sh
 nv [オプション] [編集対象ファイル]

@@ -30,7 +30,7 @@ ARG TARGETARCH
 ENV HOME=/tmp/nvim-home \
     XDG_CONFIG_HOME=/tmp/nvim-home/.config
 
-COPY dotfiles/nvim ${XDG_CONFIG_HOME}/nvim
+COPY nvim ${XDG_CONFIG_HOME}/nvim
 COPY scripts/install_neovim.sh /usr/local/bin/install_neovim.sh
 
 COPY --from=tree-sitter-builder /parser /usr/local/lib/nvim/parser
