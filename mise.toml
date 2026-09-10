@@ -4,11 +4,22 @@ run = """
   set -e
   docker build --tag neovim-container:ci .
   trap 'docker image rm neovim-container:ci' EXIT
-  export NVIM_CONTAINER_IMAGE=neovim-container:ci
   docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
-  ./bin/nv --headless '+qa'
-  ./bin/nv-debug -lc 'nvim --headless "+qa"'
-  ./bin/nv-debug -lc 'git --version'
-  ./bin/nv-debug -lc 'rg --version'
+  docker run --rm neovim-container:ci --headless '+qa'
+  docker run --rm --entrypoint git neovim-container:ci --version
+  docker run --rm --entrypoint rg neovim-container:ci --version
+  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
+    parsers="
+      bash capnp cmake cpp css csv dart dockerfile gitcommit haskell html
+      javascript json json5 just luadoc make python regex rust toml tsx
+      typescript yaml
+      c diff lua markdown markdown_inline vimscript vimdoc
+    "
+    for parser in ${parsers}; do
+      nvim --headless -u NONE \
+        -c "lua assert(vim.treesitter.language.add('${parser}'))" \
+        -c "qa"
+    done
+  '
   echo "CI completed successfully."
 """
