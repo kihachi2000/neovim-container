@@ -8,7 +8,7 @@ local function set_colorscheme(name)
     vim.cmd.colorscheme(name)
 end
 
-set_colorscheme("yash")
+set_colorscheme("nightfox")
 
 vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "*",
@@ -17,6 +17,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
             set_colorscheme("flexoki-light")
             return
         end
-        set_colorscheme("yash")
+        set_colorscheme("nightfox")
     end,
 })
