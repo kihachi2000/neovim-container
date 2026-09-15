@@ -9,17 +9,10 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
-        curl \
         git; \
     rm -rf /var/lib/apt/lists/*; \
-    curl \
-        -L \
-        --proto "=https" \
-        --tlsv1.2 \
-        -sSf \
-        https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash; \
     for retry in 1 2 3; do \
-        cargo binstall --no-confirm --git 'https://github.com/feel-ix-343/markdown-oxide' --rev '7ebca709123506322ca478dc2ef9de4bae503995' markdown-oxide && break; \
+        cargo install --locked --git 'https://github.com/feel-ix-343/markdown-oxide' --rev '7ebca709123506322ca478dc2ef9de4bae503995' markdown-oxide && break; \
         if [ "${retry}" -eq 3 ]; then \
             exit 1; \
         fi; \
