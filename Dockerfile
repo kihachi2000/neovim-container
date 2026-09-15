@@ -55,6 +55,8 @@ ENV HOME=/tmp/nvim-home \
     XDG_CONFIG_HOME=/tmp/nvim-home/.config \
     NVIM_LSP_BIN_DIR=/usr/local/lib/nvim/lsp
 
+RUN mkdir -p ${NVIM_LSP_BIN_DIR}
+
 COPY nvim ${XDG_CONFIG_HOME}/nvim
 COPY scripts/install_neovim.sh /usr/local/bin/install_neovim.sh
 
