@@ -19,7 +19,7 @@ RUN set -eux; \
         -sSf \
         https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash; \
     for retry in 1 2 3; do \
-        cargo binstall --no-confirm --git 'https://github.com/feel-ix-343/markdown-oxide' markdown-oxide && break; \
+        cargo binstall --no-confirm --git 'https://github.com/feel-ix-343/markdown-oxide' --rev '7ebca709123506322ca478dc2ef9de4bae503995' markdown-oxide && break; \
         if [ "${retry}" -eq 3 ]; then \
             exit 1; \
         fi; \
