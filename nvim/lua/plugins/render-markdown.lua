@@ -11,7 +11,7 @@ return {
             enabled = true,
             sign = false,
             position = "inline",
-            icons = { "󰉫 ", "󰉬 ", "󰉭 ", "󰉮 ", "󰉯 ", "󰉰 " },
+            icons = {},
             backgrounds = {
                 "RenderMarkdownH1Bg",
                 "RenderMarkdownH2Bg",
