@@ -12,6 +12,16 @@ run = """
     '+qa'
   docker run --rm --entrypoint git neovim-container:ci --version
   docker run --rm --entrypoint rg neovim-container:ci --version
+  docker run --rm --entrypoint /usr/local/lib/nvim/lsp/markdown-oxide neovim-container:ci --version
+  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
+    workdir="$(mktemp -d)"
+    trap "rm -rf ${workdir}" EXIT
+    touch "${workdir}/.moxide.toml"
+    printf "# markdown-oxide test\n" > "${workdir}/test.md"
+    nvim --headless "${workdir}/test.md" \
+      "+lua assert(vim.wait(5000, function() return #vim.lsp.get_clients({ name = \"markdown_oxide\", bufnr = 0 }) > 0 end, 100), \"markdown_oxide did not attach\")" \
+      "+qa"
+  '
   docker run --rm --entrypoint sh neovim-container:ci -eu -c '
     parsers="
       bash capnp cmake cpp css csv dart dockerfile gitcommit haskell html
