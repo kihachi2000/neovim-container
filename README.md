@@ -27,7 +27,7 @@ nv-debug [bashオプション]
 | ---------- | ---- |
 | Neovim | v0.12.5 |
 | ベースイメージ | debian:trixie-slim |
-| 同梱コマンド | `git` / `curl` / `rg` |
+| 同梱コマンド | `git` / `curl` / `rg` / `markdown-oxide` |
 
 ### プラグイン
 
