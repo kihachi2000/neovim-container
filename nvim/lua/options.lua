@@ -12,6 +12,10 @@ opt.swapfile = false
 -- クリップボード
 opt.clipboard = "unnamedplus"
 
+-- dockerコンテナ内から
+-- ホストOSのクリップボードと連携する
+vim.g.clipboard = "osc52"
+
 -- タブを半角スペース4つにする
 opt.expandtab = true
 opt.tabstop = 4
