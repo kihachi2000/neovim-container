@@ -16,15 +16,7 @@ return {
         local project_path_cache = {}
         local project_path_pending_callbacks = {}
 
-        local function get_project_root(bufnr)
-            local buffer_name = vim.api.nvim_buf_get_name(bufnr)
-            local start_path = buffer_name ~= "" and vim.fs.dirname(buffer_name) or vim.fn.getcwd()
-            local git_dir = vim.fs.find(".git", { path = start_path, upward = true })[1]
-
-            if git_dir then
-                return vim.fs.dirname(git_dir)
-            end
-
+        local function get_project_root()
             return vim.fn.getcwd()
         end
 
@@ -115,7 +107,7 @@ return {
                 return callback({ items = {} })
             end
 
-            get_project_path_items(get_project_root(params.context.bufnr), function(items)
+            get_project_path_items(get_project_root(), function(items)
                 callback({
                     items = items,
                     isIncomplete = false,
