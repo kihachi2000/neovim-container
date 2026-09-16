@@ -13,6 +13,8 @@ return {
     config = function()
         local cmp = require("cmp")
         local project_path_source = {}
+        local project_path_cache = {}
+        local project_path_pending_callbacks = {}
 
         local function get_project_root(bufnr)
             local buffer_name = vim.api.nvim_buf_get_name(bufnr)
@@ -26,16 +28,7 @@ return {
             return vim.fn.getcwd()
         end
 
-        local function get_project_path_items(root)
-            local result = vim.system(
-                { "rg", "--files", "--hidden", "--glob", "!.git" },
-                { cwd = root, text = true }
-            ):wait()
-
-            if result.code ~= 0 then
-                return {}
-            end
-
+        local function build_project_path_items(stdout)
             local items = {}
             local seen_directories = {}
 
@@ -57,7 +50,7 @@ return {
                 end
             end
 
-            for path in result.stdout:gmatch("[^\r\n]+") do
+            for path in stdout:gmatch("[^\r\n]+") do
                 add_directory_items(path)
                 table.insert(items, {
                     label = path,
@@ -72,6 +65,36 @@ return {
             end)
 
             return items
+        end
+
+        local function get_project_path_items(root, callback)
+            if project_path_cache[root] then
+                callback(project_path_cache[root])
+                return
+            end
+
+            if project_path_pending_callbacks[root] then
+                table.insert(project_path_pending_callbacks[root], callback)
+                return
+            end
+
+            project_path_pending_callbacks[root] = { callback }
+
+            vim.system({ "rg", "--files", "--hidden", "--glob", "!.git" }, { cwd = root, text = true }, function(result)
+                local items = {}
+
+                if result.code == 0 then
+                    items = build_project_path_items(result.stdout)
+                end
+
+                project_path_cache[root] = items
+
+                for _, pending_callback in ipairs(project_path_pending_callbacks[root]) do
+                    pending_callback(items)
+                end
+
+                project_path_pending_callbacks[root] = nil
+            end)
         end
 
         function project_path_source.new()
@@ -92,9 +115,11 @@ return {
                 return callback({ items = {} })
             end
 
-            callback({
-                items = get_project_path_items(get_project_root(params.context.bufnr)),
-                isIncomplete = false,
+            get_project_path_items(get_project_root(params.context.bufnr), function(items)
+                callback({
+                    items = items,
+                    isIncomplete = false,
+                })
             })
         end
 
