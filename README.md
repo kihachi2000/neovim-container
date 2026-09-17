@@ -37,7 +37,7 @@ nv-debug [bashオプション]
 | cohama/lexima.vim | latest |
 | nvim-lualine/lualine.nvim | latest |
 | nvim-tree/nvim-web-devicons | latest |
-| nvim-telescope/telescope.nvim | 0.1.8 |
+| nvim-telescope/telescope.nvim | v0.2.2 |
 | nvim-lua/plenary.nvim | latest |
 | MeanderingProgrammer/render-markdown.nvim | latest |
 | nvim-treesitter/nvim-treesitter | latest |

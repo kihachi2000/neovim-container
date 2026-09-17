@@ -19,8 +19,8 @@ vim.keymap.set(
 
 return {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
-    depencies = { "nvim-lua/plenary.nvim" },
+    tag = "v0.2.2",
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
         local actions = require("telescope.actions")
         local fb_actions = require("telescope").extensions.file_browser.actions
