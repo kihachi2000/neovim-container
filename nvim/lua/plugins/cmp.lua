@@ -12,15 +12,15 @@ return {
     },
     config = function()
         local cmp = require("cmp")
-        local project_path_source = {}
-        local project_path_cache = {}
-        local project_path_pending_callbacks = {}
+        local descendant_path_source = {}
+        local descendant_path_cache = {}
+        local descendant_path_pending_callbacks = {}
 
-        local function get_project_root()
+        local function get_current_directory()
             return vim.fn.getcwd()
         end
 
-        local function build_project_path_items(stdout)
+        local function build_descendant_path_items(stdout)
             local items = {}
             local seen_directories = {}
 
@@ -59,45 +59,45 @@ return {
             return items
         end
 
-        local function get_project_path_items(root, callback)
-            if project_path_cache[root] then
-                callback(project_path_cache[root])
+        local function get_descendant_path_items(root, callback)
+            if descendant_path_cache[root] then
+                callback(descendant_path_cache[root])
                 return
             end
 
-            if project_path_pending_callbacks[root] then
-                table.insert(project_path_pending_callbacks[root], callback)
+            if descendant_path_pending_callbacks[root] then
+                table.insert(descendant_path_pending_callbacks[root], callback)
                 return
             end
 
-            project_path_pending_callbacks[root] = { callback }
+            descendant_path_pending_callbacks[root] = { callback }
 
             vim.system({ "rg", "--files", "--hidden", "--glob", "!.git" }, { cwd = root, text = true }, function(result)
                 local items = {}
 
                 if result.code == 0 then
-                    items = build_project_path_items(result.stdout)
+                    items = build_descendant_path_items(result.stdout)
                 end
 
-                project_path_cache[root] = items
+                descendant_path_cache[root] = items
 
-                for _, pending_callback in ipairs(project_path_pending_callbacks[root]) do
+                for _, pending_callback in ipairs(descendant_path_pending_callbacks[root]) do
                     pending_callback(items)
                 end
 
-                project_path_pending_callbacks[root] = nil
+                descendant_path_pending_callbacks[root] = nil
             end)
         end
 
-        function project_path_source.new()
-            return setmetatable({}, { __index = project_path_source })
+        function descendant_path_source.new()
+            return setmetatable({}, { __index = descendant_path_source })
         end
 
-        function project_path_source.get_keyword_pattern()
+        function descendant_path_source.get_keyword_pattern()
             return "[^[:blank:]]\\+"
         end
 
-        function project_path_source.complete(_, params, callback)
+        function descendant_path_source.complete(_, params, callback)
             if vim.fn.executable("rg") ~= 1 then
                 return callback({ items = {} })
             end
@@ -107,7 +107,7 @@ return {
                 return callback({ items = {} })
             end
 
-            get_project_path_items(get_project_root(), function(items)
+            get_descendant_path_items(get_current_directory(), function(items)
                 callback({
                     items = items,
                     isIncomplete = false,
@@ -115,7 +115,7 @@ return {
             })
         end
 
-        cmp.register_source("project_path", project_path_source.new())
+        cmp.register_source("descendant_path", descendant_path_source.new())
 
         cmp.setup({
             snippet = {
@@ -149,12 +149,11 @@ return {
 
         cmp.setup.cmdline(":", {
             mapping = cmp.mapping.preset.cmdline(),
-            sources = cmp.config.sources({
-                { name = "project_path" },
+            sources = {
+                { name = "descendant_path" },
                 { name = "path" },
-            }, {
                 { name = "cmdline" },
-            }),
+            },
         })
     end,
 }
