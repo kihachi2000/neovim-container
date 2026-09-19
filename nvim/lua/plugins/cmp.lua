@@ -107,12 +107,15 @@ return {
                 return callback({ items = {} })
             end
 
-            get_descendant_path_items(get_current_directory(), function(items)
-                callback({
-                    items = items,
-                    isIncomplete = false,
-                })
-            })
+            get_descendant_path_items(
+                get_current_directory(),
+                function(items)
+                    callback({
+                        items = items,
+                        isIncomplete = false,
+                    })
+                end
+            )
         end
 
         cmp.register_source("descendant_path", descendant_path_source.new())
