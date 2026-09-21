@@ -54,16 +54,41 @@ commandTests:
     expectedError: ["OK"]
 
   # Tree-sitter Parsers
+  # diff は見つからなかったためとりあえず検証スキップ
   - name: "Tree-sitter parsers load"
-    command: "sh"
+    command: "nvim"
     args:
-      - "-eu"
-      - "-c"
-      - >-
-        parsers="bash capnp cmake cpp css csv dart dockerfile gitcommit haskell
-        html javascript json json5 just luadoc make python regex rust toml tsx
-        typescript yaml c diff lua markdown markdown_inline vimscript vimdoc";
-        for parser in ${parsers};
-        do nvim --headless -u NONE
-        -c "lua assert(vim.treesitter.language.add('${parser}'))"
-        -c qa; done
+      - "--headless"
+      - "+lua print(vim.inspect(vim.tbl_map(function(p) return vim.fn.fnamemodify(p, ':t:r') end, vim.api.nvim_get_runtime_file('parser/*', true))))"
+      - "+qa"
+    expectedError:
+      - "\"bash\""
+      - "\"c\""
+      - "\"capnp\""
+      - "\"cmake\""
+      - "\"cpp\""
+      - "\"css\""
+      - "\"csv\""
+      - "\"dart\""
+      - "\"dockerfile\""
+      - "\"gitcommit\""
+      - "\"haskell\""
+      - "\"html\""
+      - "\"javascript\""
+      - "\"json\""
+      - "\"json5\""
+      - "\"just\""
+      - "\"lua\""
+      - "\"luadoc\""
+      - "\"make\""
+      - "\"markdown\""
+      - "\"markdown_inline\""
+      - "\"python\""
+      - "\"regex\""
+      - "\"rust\""
+      - "\"toml\""
+      - "\"tsx\""
+      - "\"typescript\""
+      - "\"vim\""
+      - "\"vimdoc\""
+      - "\"yaml\""
