@@ -2,7 +2,7 @@
 
 ## リポジトリ概要
 
-Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツールを管理するリポジトリ。
+Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツールを管理するリポジトリ。テストツールとして [container-structure-test](https://github.com/GoogleContainerTools/container-structure-test) を利用している。
 
 ## 更新時の規約
 
@@ -10,16 +10,8 @@ Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツー�
 - Dockerfileに記載するソフトウェアのインストール方法は以下の優先順位で比較すること。
   1. バイナリサイズが小さい方法
   2. ビルド時間が短い方法
-- Dockerfile 更新時は、CI も更新すること。
 - 指示がない限りテストは更新しないこと。
-
-## CI 確認項目
-
-CI では以下を確認すること。
-
-- neovim を起動できること（`nvim --headless '+qa'` が成功すること）。
-- neovim が依存するソフトウェアを起動できること。
-  - `〇〇 --version` 等で起動確認を行うこと。
+- テスト更新時には、`test.yaml` 先頭のコメントを読んで方針を確認すること。
 
 ## コミットメッセージのルール（Conventional Commits 準拠）
 
