@@ -21,4 +21,4 @@ jobs:
         uses: jdx/mise-action@v2
 
       - name: Build and smoke test
-        run: mise run ci
+        run: mise run test
