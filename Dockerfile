@@ -74,6 +74,6 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     bash /usr/local/bin/install_neovim.sh; \
     nvim --headless "+Lazy! sync" "+qa"; \
-    chmod 1777 -R "${HOME}"
+    chmod 0777 -R "${HOME}"
 
 ENTRYPOINT ["nvim"]
