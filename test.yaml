@@ -39,8 +39,8 @@ commandTests:
     args:
       - "--headless"
       - "+qa"
-    excludedOutput: ["^$"]
-    excludedError: ["^$"] 
+    expectedOutput: ["^$"]
+    expectedError: ["^$"] 
 
 
   - name: "markdown-oxide attaches to a Markdown buffer"
