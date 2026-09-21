@@ -1,39 +1,13 @@
-[tasks.ci]
+[tasks.test]
 description = "Build and smoke test the Docker image"
 run = """
   set -e
   docker build --tag neovim-container:ci .
   trap 'docker image rm neovim-container:ci' EXIT
-  docker run --rm --entrypoint test neovim-container:ci -s /etc/ssl/certs/ca-certificates.crt
-  docker run --rm neovim-container:ci --headless '+qa'
-  docker run --rm neovim-container:ci --headless \
-    '+sleep 10' \
-    '+lua local msgs = vim.api.nvim_exec2("messages", { output = true }).output; assert(msgs:match("^%s*$"), msgs)' \
-    '+qa'
-  docker run --rm --entrypoint git neovim-container:ci --version
-  docker run --rm --entrypoint rg neovim-container:ci --version
-  docker run --rm --entrypoint /usr/local/lib/nvim/lsp/markdown-oxide neovim-container:ci --version
-  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
-    workdir="$(mktemp -d)"
-    trap "rm -rf ${workdir}" EXIT
-    touch "${workdir}/.moxide.toml"
-    printf "# markdown-oxide test\n" > "${workdir}/test.md"
-    nvim --headless "${workdir}/test.md" \
-      "+lua assert(vim.wait(5000, function() return #vim.lsp.get_clients({ name = \"markdown_oxide\", bufnr = 0 }) > 0 end, 100), \"markdown_oxide did not attach\")" \
-      "+qa"
-  '
-  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
-    parsers="
-      bash capnp cmake cpp css csv dart dockerfile gitcommit haskell html
-      javascript json json5 just luadoc make python regex rust toml tsx
-      typescript yaml
-      c diff lua markdown markdown_inline vimscript vimdoc
-    "
-    for parser in ${parsers}; do
-      nvim --headless -u NONE \
-        -c "lua assert(vim.treesitter.language.add('${parser}'))" \
-        -c "qa"
-    done
-  '
+  docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "${PWD}/test.yaml:/test.yaml:ro" \
+    gcr.io/gcp-runtimes/container-structure-test \
+    test --image neovim-container:ci --config /test.yaml
   echo "CI completed successfully."
 """

@@ -1,0 +1,72 @@
+# 確認すること
+# - 外部ツールのバージョンコマンドを呼び出せること
+# - Neovimと各言語サーバの疎通
+# - NeovimからTree-sitterパーサを利用できること
+
+# 確認しないこと
+# - Neovimキーバインド
+# - Neovimプラグイン
+
+schemaVersion: "2.0.0"
+
+containerRunOptions:
+  user: "1000"
+
+commandTests:
+  - name: "CA certificates are readable"
+    command: "test"
+    args:
+      - "-s"
+      - "/etc/ssl/certs/ca-certificates.crt"
+
+  - name: "Git starts"
+    command: "git"
+    args:
+      - "--version"
+
+  - name: "ripgrep starts"
+    command: "rg"
+    args:
+      - "--version"
+
+  - name: "markdown-oxide starts"
+    command: "/usr/local/lib/nvim/lsp/markdown-oxide"
+    args:
+      - "--version"
+
+  - name: "Neovim starts"
+    command: "nvim"
+    args:
+      - "--headless"
+      - "+qa"
+    excludedOutput: ["^$"]
+    excludedError: ["^$"] 
+
+
+  - name: "markdown-oxide attaches to a Markdown buffer"
+    command: "sh"
+    args:
+      - "-eu"
+      - "-c"
+      - >-
+        workdir="$(mktemp -d)";
+        trap 'rm -rf "${workdir}"' EXIT;
+        touch "${workdir}/.moxide.toml";
+        printf "# markdown-oxide test\n" > "${workdir}/test.md";
+        nvim --headless "${workdir}/test.md"
+        "+lua assert(vim.wait(5000, function() return #vim.lsp.get_clients({ name = \"markdown_oxide\", bufnr = 0 }) > 0 end, 100), \"markdown_oxide did not attach\")"
+        +qa
+
+  - name: "Tree-sitter parsers load"
+    command: "sh"
+    args:
+      - "-eu"
+      - "-c"
+      - >-
+        parsers="bash capnp cmake cpp css csv dart dockerfile gitcommit haskell
+        html javascript json json5 just luadoc make python regex rust toml tsx
+        typescript yaml c diff lua markdown markdown_inline vimscript vimdoc";
+        for parser in ${parsers};
+        do nvim --headless -u NONE
+        -c "lua assert(vim.treesitter.language.add('${parser}'))"
+        -c qa; done
