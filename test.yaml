@@ -29,11 +29,6 @@ commandTests:
     args:
       - "--version"
 
-  - name: "markdown-oxide starts"
-    command: "/usr/local/lib/nvim/lsp/markdown-oxide"
-    args:
-      - "--version"
-
   - name: "Neovim starts"
     command: "nvim"
     args:
@@ -42,21 +37,23 @@ commandTests:
     expectedOutput: ["^$"]
     expectedError: ["^$"] 
 
-
-  - name: "markdown-oxide attaches to a Markdown buffer"
-    command: "sh"
+  # Language Servers
+  - name: "markdown-oxide starts"
+    command: "/usr/local/lib/nvim/lsp/markdown-oxide"
     args:
-      - "-eu"
-      - "-c"
-      - >-
-        workdir="$(mktemp -d)";
-        trap 'rm -rf "${workdir}"' EXIT;
-        touch "${workdir}/.moxide.toml";
-        printf "# markdown-oxide test\n" > "${workdir}/test.md";
-        nvim --headless "${workdir}/test.md"
-        "+lua assert(vim.wait(5000, function() return #vim.lsp.get_clients({ name = \"markdown_oxide\", bufnr = 0 }) > 0 end, 100), \"markdown_oxide did not attach\")"
-        +qa
+      - "--version"
 
+  - name: "Neovim recognizes markdown-oxide"
+    command: "nvim"
+    args:
+      - "--headless"
+      - "+edit test.md"
+      - "+sleep 5"
+      - "+lua print(#vim.lsp.get_clients({name='markdown_oxide'}) > 0 and 'OK' or 'NG')"
+      - "+qa"
+    expectedError: ["OK"]
+
+  # Tree-sitter Parsers
   - name: "Tree-sitter parsers load"
     command: "sh"
     args:
