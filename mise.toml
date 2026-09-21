@@ -2,12 +2,12 @@
 description = "Build and smoke test the Docker image"
 run = """
   set -e
-  docker build --tag neovim-container:ci .
-  trap 'docker image rm neovim-container:ci' EXIT
+  docker build --tag neovim-container:test .
+  trap 'docker image rm neovim-container:test' EXIT
   docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "${PWD}/test.yaml:/test.yaml:ro" \
     gcr.io/gcp-runtimes/container-structure-test \
-    test --image neovim-container:ci --config /test.yaml
-  echo "CI completed successfully."
+    test --image neovim-container:test --config /test.yaml
+  echo "Test completed successfully."
 """
