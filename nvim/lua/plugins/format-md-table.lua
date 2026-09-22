@@ -62,6 +62,90 @@ local function is_table_candidate(line)
     return line ~= nil and not line:match("^%s*$") and line:find("|", 1, true) ~= nil
 end
 
+local function strip_blockquote_prefix(line)
+    local stripped = line
+
+    while true do
+        local prefix = stripped:match("^(%s*>%s*)")
+        if prefix == nil then
+            break
+        end
+        stripped = stripped:sub(#prefix + 1)
+    end
+
+    return stripped
+end
+
+local function is_fence_opening(line)
+    local stripped = strip_blockquote_prefix(line):match("^%s*(.-)%s*$") or ""
+    local marker = stripped:match("^([`~][`~][`~]+)")
+
+    if marker == nil then
+        return nil
+    end
+
+    if marker:match("^```+") then
+        return "`", #marker
+    end
+
+    if marker:match("^~~~+") then
+        return "~", #marker
+    end
+
+    return nil
+end
+
+local function is_fence_closing(line, fence_char, fence_length)
+    local stripped = strip_blockquote_prefix(line):match("^%s*(.-)%s*$") or ""
+    local marker = stripped:match("^([`~][`~][`~]+)%s*$")
+
+    return marker ~= nil and marker:sub(1, 1) == fence_char and #marker >= fence_length
+end
+
+local function is_inside_fenced_code_block(lines, row)
+    local fence_char = nil
+    local fence_length = 0
+
+    for i = 1, row do
+        if fence_char == nil then
+            fence_char, fence_length = is_fence_opening(lines[i])
+        elseif is_fence_closing(lines[i], fence_char, fence_length) then
+            fence_char = nil
+            fence_length = 0
+        end
+    end
+
+    return fence_char ~= nil
+end
+
+local function split_row_prefix(line)
+    local prefix = line:match("^%s*") or ""
+    local content = line:sub(#prefix + 1)
+
+    while true do
+        local blockquote = content:match("^(>%s*)")
+        if blockquote == nil then
+            break
+        end
+        prefix = prefix .. blockquote
+        content = content:sub(#blockquote + 1)
+    end
+
+    local list_marker = content:match("^([%-%+%*]%s+)")
+    if list_marker ~= nil and content:sub(#list_marker + 1, #list_marker + 1) == "|" then
+        prefix = prefix .. list_marker
+        content = content:sub(#list_marker + 1)
+    else
+        list_marker = content:match("^(%d+[.)]%s+)")
+        if list_marker ~= nil and content:sub(#list_marker + 1, #list_marker + 1) == "|" then
+            prefix = prefix .. list_marker
+            content = content:sub(#list_marker + 1)
+        end
+    end
+
+    return prefix, content
+end
+
 local function build_separator(cell, width)
     local left_aligned = cell:sub(1, 1) == ":"
     local right_aligned = cell:sub(-1) == ":"
@@ -92,7 +176,7 @@ function M.format_table_under_cursor()
     local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     local current_line = lines[row]
 
-    if not is_table_candidate(current_line) then
+    if not is_table_candidate(current_line) or is_inside_fenced_code_block(lines, row) then
         return false
     end
 
@@ -110,8 +194,12 @@ function M.format_table_under_cursor()
     local delimiter_index = nil
 
     for i = start_row, end_row do
-        parsed_rows[#parsed_rows + 1] = split_row(lines[i])
-        if delimiter_index == nil and is_delimiter_row(parsed_rows[#parsed_rows]) then
+        local prefix, content = split_row_prefix(lines[i])
+        parsed_rows[#parsed_rows + 1] = {
+            prefix = prefix,
+            cells = split_row(content),
+        }
+        if delimiter_index == nil and is_delimiter_row(parsed_rows[#parsed_rows].cells) then
             delimiter_index = #parsed_rows
         end
     end
@@ -121,8 +209,8 @@ function M.format_table_under_cursor()
     end
 
     local column_count = 0
-    for _, cells in ipairs(parsed_rows) do
-        column_count = math.max(column_count, #cells)
+    for _, row_data in ipairs(parsed_rows) do
+        column_count = math.max(column_count, #row_data.cells)
     end
 
     local widths = {}
@@ -130,7 +218,8 @@ function M.format_table_under_cursor()
         widths[column] = 3
     end
 
-    for index, cells in ipairs(parsed_rows) do
+    for index, row_data in ipairs(parsed_rows) do
+        local cells = row_data.cells
         for column = 1, column_count do
             cells[column] = cells[column] or ""
             if index ~= delimiter_index then
@@ -139,10 +228,10 @@ function M.format_table_under_cursor()
         end
     end
 
-    local indent = lines[start_row]:match("^%s*") or ""
     local formatted_lines = {}
 
-    for index, cells in ipairs(parsed_rows) do
+    for index, row_data in ipairs(parsed_rows) do
+        local cells = row_data.cells
         local formatted_cells = {}
         for column = 1, column_count do
             if index == delimiter_index then
@@ -152,7 +241,7 @@ function M.format_table_under_cursor()
             end
         end
 
-        formatted_lines[index] = indent .. "| " .. table.concat(formatted_cells, " | ") .. " |"
+        formatted_lines[index] = row_data.prefix .. "| " .. table.concat(formatted_cells, " | ") .. " |"
     end
 
     vim.api.nvim_buf_set_lines(bufnr, start_row - 1, end_row, false, formatted_lines)
