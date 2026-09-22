@@ -34,8 +34,8 @@ commandTests:
     args:
       - "--headless"
       - "+qa"
-    expectedOutput: ["^$"]
-    expectedError: ["^$"] 
+    excludedOutput: [".+"]
+    excludedError: [".+"] 
 
   # Language Servers
   - name: "markdown-oxide starts"
