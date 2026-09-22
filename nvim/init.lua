@@ -1,7 +1,6 @@
 require("base")
 require("keymaps")
 require("options")
-require("plugins.format-md-table")
 
 -- lazy bootstrap
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
