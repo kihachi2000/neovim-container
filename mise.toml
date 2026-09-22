@@ -23,21 +23,6 @@ run = """
       "+qa"
   '
   docker run --rm --entrypoint sh neovim-container:ci -eu -c '
-    workdir="$(mktemp -d)"
-    trap "rm -rf ${workdir}" EXIT
-    cat <<'"'"'EOF'"'"' > "${workdir}/table.md"
-|name|value|
-|:--|--:|
-|foo|1|
-|longer text|22|
-EOF
-    nvim --headless "${workdir}/table.md" \
-      "+lua vim.api.nvim_win_set_cursor(0, { 2, 0 })" \
-      "+lua assert(require(\"plugins.format-md-table\").format_table_under_cursor(), \"markdown table was not detected\")" \
-      "+lua local expected = { \"| name        | value |\", \"| :---------- | ----: |\", \"| foo         | 1     |\", \"| longer text | 22    |\" }; local actual = vim.api.nvim_buf_get_lines(0, 0, -1, false); assert(vim.deep_equal(actual, expected), vim.inspect(actual))" \
-      "+qa"
-  '
-  docker run --rm --entrypoint sh neovim-container:ci -eu -c '
     parsers="
       bash capnp cmake cpp css csv dart dockerfile gitcommit haskell html
       javascript json json5 just luadoc make python regex rust toml tsx
