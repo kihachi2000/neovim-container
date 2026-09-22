@@ -21,6 +21,7 @@ require("lazy").setup("plugins", {
     },
 })
 
+require("format_md_table")
 require("lsp_markdown_oxide")
 require("autocmds")
 require("colorscheme")
