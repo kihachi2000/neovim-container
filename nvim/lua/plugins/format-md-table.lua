@@ -169,7 +169,7 @@ local function pad_cell(cell, width)
     return cell .. string.rep(" ", width - vim.fn.strdisplaywidth(cell))
 end
 
-function M.format_table_under_cursor()
+local function format_table_under_cursor()
     local bufnr = vim.api.nvim_get_current_buf()
     local cursor = vim.api.nvim_win_get_cursor(0)
     local row = cursor[1]
@@ -249,13 +249,20 @@ function M.format_table_under_cursor()
     return true
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "markdown",
-    callback = function(args)
-        vim.keymap.set("n", "<leader>tt", function()
-            M.format_table_under_cursor()
-        end, { buffer = args.buf, noremap = true, silent = true, desc = "Format markdown table" })
+return {
+    dir = vim.fn.stdpath("config"),
+    name = "format-md-table",
+    config = function()
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "markdown",
+            callback = function(args)
+                vim.keymap.set("n", "<leader>tt", format_table_under_cursor, {
+                    buffer = args.buf,
+                    noremap = true,
+                    silent = true,
+                    desc = "Format markdown table",
+                })
+            end,
+        })
     end,
-})
-
-return M
+}
