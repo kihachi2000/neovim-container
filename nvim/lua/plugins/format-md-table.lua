@@ -28,7 +28,7 @@ local function split_row(line)
         table.remove(cells, 1)
     end
 
-    if line:match("|%s*$") then
+    if line:match("|%s*$") and vim.trim(cells[#cells] or "") == "" then
         table.remove(cells, #cells)
     end
 
