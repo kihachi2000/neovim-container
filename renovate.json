@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG NVIM_VERSION=(?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "neovim/neovim",
+      "datasourceTemplate": "github-releases"
+    }
+  ]
+}
