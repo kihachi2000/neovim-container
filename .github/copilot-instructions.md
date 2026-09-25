@@ -13,57 +13,33 @@ Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツー�
 - 指示がない限りテストは更新しないこと。
 - テスト更新時には、`test.yaml` 先頭のコメントを読んで方針を確認すること。
 
-## コミットメッセージのルール（Conventional Commits 準拠）
+## コミットメッセージのルール
 
-コミットメッセージは以下の形式に従った英文とすること。
+コミットメッセージは以下の形式に従った文章とすること。
 
 ```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
+<スコープ>: <説明>
 ```
 
-### type（必須）
+### スコープ
 
-| type | 用途 |
+そのコミットにおける変更範囲に応じてスコープを設定する。
+複数のスコープが該当する場合、より上の行のスコープを優先する。
+
+| スコープ | 変更ファイル |
 |------|------|
-| `feat` | 新機能の追加 |
-| `fix` | バグ修正 |
-| `docs` | ドキュメントのみの変更 |
-| `style` | コードの動作に影響しない変更（空白、フォーマット等） |
-| `refactor` | バグ修正でも新機能追加でもないコードの変更 |
-| `test` | テストの追加・修正 |
-| `chore` | ビルドプロセスや補助ツールの変更 |
-| `ci` | CI 設定ファイルの変更 |
-| `perf` | パフォーマンス改善 |
-| `revert` | 以前のコミットの取り消し |
+| `nvim` | Neovimの設定を変更したとき |
+| `docker` | Dockerイメージのビルドプロセスを変更したとき |
+| `test` | テストを変更したとき |
+| `ci` | CI設定ファイルを変更したとき |
+| `docs` | ドキュメントを変更したとき |
+| `prompt` | エージェント用プロンプトを更新したとき |
 
-### ルール
+### 説明
 
-- `description` は小文字で始め、末尾にピリオドを付けない。
-- 破壊的変更がある場合は `type` の後に `!` を付ける（例: `feat!: ...`）、または footer に `BREAKING CHANGE: <説明>` を記載する。
-- `scope` はオプションで、変更対象のモジュールや範囲を括弧内に記述する（例: `fix(docker): ...`）。
-- `body` はオプションで、変更の背景や理由を記述する。
-- `footer` はオプションで、`BREAKING CHANGE` や Issue 参照（`Closes #123` 等）を記述する。
+説明は以下のルールを守ること。
 
-### 例
-
-```
-feat(docker): add neovim nightly build support
-
-Closes #10
-```
-
-```
-fix: correct base image tag
-
-Previously used an outdated tag that caused build failures.
-```
-
-```
-chore!: drop support for ubuntu 20.04
-
-BREAKING CHANGE: minimum supported base image is now ubuntu 22.04
-```
+- 日本語（プラグイン名等はアルファベット利用可）
+- 30文字以内
+- 句読点なし
+- 体言止め
