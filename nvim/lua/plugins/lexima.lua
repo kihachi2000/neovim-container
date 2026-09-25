@@ -39,5 +39,10 @@ return {
         vim.cmd(
             [[call lexima#add_rule({'char': '<C-j>', 'at': '\%#;', 'input': '<Right>'})]]
         )
+
+        -- markdown の [ ] 内で Space を入力した時に後方スペースを自動挿入しない
+        vim.cmd(
+            [[call lexima#add_rule({'char': '<Space>', 'at': '\[\%#\]', 'input': ' ', 'filetype': 'markdown'})]]
+        )
     end,
 }
