@@ -7,7 +7,7 @@ description: >-
 
 ## 手順
 1. 対象スキルの目的と利用場面を確認する。
-2. `.github/skills/skill-name/SKILL.md` を作成または更新する。
+2. `.github/skills/skill-name/SKILL.md` を作成または更新する。`skill-name` は対象スキル名に置き換える。
 3. 冒頭に YAML frontmatter で `name` と `description` を書く。
 4. 本文の見出しは `## 手順` `## 本スキルでやること` `## 本スキルでやらないこと` の3つだけにする。
 5. 各見出し配下に、対象スキルの具体的な作業内容と境界を簡潔に書く。
