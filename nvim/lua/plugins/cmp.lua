@@ -15,6 +15,28 @@ return {
         local descendant_path_source = {}
         local descendant_path_cache = {}
         local descendant_path_pending_callbacks = {}
+        local excluded_directories = {
+            ".git",
+            "node_modules",
+            "vendor",
+            "target",
+            "dist",
+            "build",
+            "coverage",
+            ".cache",
+            "__pycache__",
+            ".venv",
+            "venv",
+            "env",
+            ".pytest_cache",
+            ".mypy_cache",
+            ".ruff_cache",
+            ".tox",
+            ".gradle",
+            ".dart_tool",
+            ".pub-cache",
+            ".terraform",
+        }
 
         local function get_current_directory()
             return vim.fn.getcwd()
@@ -72,7 +94,13 @@ return {
 
             descendant_path_pending_callbacks[root] = { callback }
 
-            vim.system({ "rg", "--files", "--hidden", "--glob", "!.git" }, { cwd = root, text = true }, function(result)
+            local rg_args = { "rg", "--files", "--hidden" }
+            for _, directory in ipairs(excluded_directories) do
+                table.insert(rg_args, "--glob")
+                table.insert(rg_args, string.format("!**/%s/**", directory))
+            end
+
+            vim.system(rg_args, { cwd = root, text = true }, function(result)
                 local items = {}
 
                 if result.code == 0 then
