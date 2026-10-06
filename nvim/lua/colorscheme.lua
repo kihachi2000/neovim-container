@@ -1,6 +1,3 @@
--- yash読み込み
-vim.opt.runtimepath:append("$HOME/git/yash")
-
 local function set_colorscheme(name)
     if vim.g.colors_name == name then
         return
