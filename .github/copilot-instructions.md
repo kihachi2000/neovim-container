@@ -50,4 +50,4 @@ Neovim 実行用コンテナを生成する Dockerfile と、その周辺ツー�
 | -------- | ---------- |
 | `/skill-improvement` | リポジトリ内にスキルを新規作成するとき。リポジトリ内のスキルを更新するとき。 |
 | `/pull-request` | 変更内容を整理し、リポジトリの規約に沿ったプルリクエストを作成するとき。 |
-| `/neovim-plugin-selection` | 利用目的に合うLua製Neovimプラグインを選定するとき。 |
+| `/neovim-plugin-selection` | Neovimプラグインの構成を変更するとき。 |
