@@ -19,6 +19,7 @@ Neovim 実行専用の Docker コンテナ。
 | ---------- | ---------- |
 | folke/lazy.nvim | stable |
 | cohama/lexima.vim | latest |
+| gaoDean/autolist.nvim | latest |
 | nvim-lualine/lualine.nvim | latest |
 | nvim-tree/nvim-web-devicons | latest |
 | nvim-telescope/telescope.nvim | v0.2.2 |
